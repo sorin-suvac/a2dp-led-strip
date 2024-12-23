@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Led</title>
+</head>
+<body>
+<h2>Display:</h2>
+<button onclick="sendRequest('POST', '/display', '1')">ON</button>
+<button onclick="sendRequest('POST', '/display', '2')">OFF</button>
+<br>
+<h2>Mode:</h2>
+<label for="myDropdown"></label><select id="myDropdown" onchange="sendOption()">
+    <option value="light">Light</option>
+    <option value="medium">Medium</option>
+    <option value="high">High</option>
+</select>
+
+<script>
+    function sendRequest(method, url, data=null) {
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        if (method === 'POST') {
+            options.body = JSON.stringify({ key: data });
+        }
+        fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    function sendOption() {
+        const selectedValue = document.getElementById("myDropdown").value;
+        if (selectedValue) {
+            sendRequest('POST', '/mode', selectedValue)
+        } else {
+            console.log("Please select an option");
+        }
+    }
+</script>
+<footer><p>&copy; 2024 suvacsorin@gmail.com. All rights reserved.</p></footer>
+</body>
+</html>
